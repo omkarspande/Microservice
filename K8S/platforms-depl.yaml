@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platforms-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platformservice #this is refering to below tepmlate
+  template:
+    metadata:
+      labels:
+        app: platformservice #this is defining what we are deploying
+    spec:
+      containers:
+        - name: platformservice
+          image: om1608/platformservice:latest
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: platforms-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: platformservice
+  ports:
+    - name: platformservice
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: platformgrpc
+      protocol: TCP
+      port: 666
+      targetPort: 666
